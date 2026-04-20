@@ -1,0 +1,50 @@
+name: Release Plugin
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  validate-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate plugin.json
+        run: |
+          if [ ! -f .claude-plugin/plugin.json ]; then
+            echo "ERROR: .claude-plugin/plugin.json not found"
+            exit 1
+          fi
+          # Validate JSON is parseable
+          python3 -c "import json; json.load(open('.claude-plugin/plugin.json'))"
+          # Verify version in plugin.json matches tag
+          PLUGIN_VERSION=$(python3 -c "import json; print(json.load(open('.claude-plugin/plugin.json'))['version'])")
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PLUGIN_VERSION" != "$TAG_VERSION" ]; then
+            echo "ERROR: plugin.json version ($PLUGIN_VERSION) does not match tag ($TAG_VERSION)"
+            exit 1
+          fi
+          echo "Version: $PLUGIN_VERSION"
+
+      - name: Validate marketplace.json
+        run: |
+          python3 -c "import json; json.load(open('.claude-plugin/marketplace.json'))"
+
+      - name: Validate skills exist
+        run: |
+          for skill in install sync status; do
+            if [ ! -f "skills/$skill/SKILL.md" ]; then
+              echo "ERROR: skills/$skill/SKILL.md not found"
+              exit 1
+            fi
+          done
+          echo "All skills present"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true

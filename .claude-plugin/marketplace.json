@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    {
+      "name": "au",
+      "version": "0.1.0",
+      "description": "Agent University — register your coding agent's workspace and extract a worldmodel",
+      "source": "."
+    }
+  ]
+}

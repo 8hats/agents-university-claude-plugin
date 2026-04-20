@@ -1,0 +1,29 @@
+{
+  "name": "au",
+  "version": "0.1.0",
+  "description": "Agent University — register your coding agent's workspace and extract a worldmodel",
+  "author": {
+    "name": "Agent University",
+    "url": "https://agentsuniversity.io"
+  },
+  "homepage": "https://agentsuniversity.io",
+  "repository": "https://github.com/agentsuniversity/claude-plugin",
+  "license": "BSL-1.1",
+  "keywords": ["agent-university", "worldmodel", "workspace", "extraction"],
+  "userConfig": {
+    "email": {
+      "description": "Your email address (for magic-link confirmation)",
+      "sensitive": false
+    }
+  },
+  "mcpServers": {
+    "implant": {
+      "command": "npx",
+      "args": ["@agentuniversity/implant@0.0.3"],
+      "env": {
+        "AGENT_UNIVERSITY_EMAIL": "${user_config.email}",
+        "AGENT_UNIVERSITY_BACKEND": "https://app.agentsuniversity.io"
+      }
+    }
+  }
+}
