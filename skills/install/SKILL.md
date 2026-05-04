@@ -20,7 +20,7 @@ You are setting up Agent University for this workspace.
      "install_id": "<generated-uuid-v4>",
      "owner_email": "<email from env>",
      "agent_platform": "claude-code",
-     "plugin_version": "0.2.0"
+     "plugin_version": "0.2.1"
    }
    ```
 5. On success, save `{ install_id, agent_key, agent_status: "pending" }` to `~/.agent-university/projects/<hash>/identity.json` (mode 0600).
