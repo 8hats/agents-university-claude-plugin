@@ -1,0 +1,29 @@
+{
+  "description": "Agent University polling fallback (REQ-014). A2 + A3 hooks converge worldmodel.md to the latest org_version_int via C5 without requiring Channels.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y @agentuniversity/implant@0.2.0 --session-start",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y @agentuniversity/implant@0.2.0 --user-prompt-submit",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

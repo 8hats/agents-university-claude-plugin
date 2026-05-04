@@ -1,0 +1,7 @@
+node_modules/
+package.json
+package-lock.json
+vitest.config.ts
+test/
+.DS_Store
+*.log

@@ -1,0 +1,14 @@
+# Default owner for the whole repo. Replace @8hats/maintainers with the
+# actual maintainer team or individual handles, then enable branch
+# protection on `main` requiring "Require review from Code Owners".
+* @8hats/maintainers
+
+# Workflow files have GITHUB_TOKEN with `contents: write` — they can
+# create releases and tag the repo. Anything touching .github/ should
+# require a maintainer review.
+/.github/                @8hats/maintainers
+/.github/workflows/      @8hats/maintainers
+/.github/dependabot.yml  @8hats/maintainers
+/CODEOWNERS              @8hats/maintainers
+/.claude-plugin/         @8hats/maintainers
+/package.json            @8hats/maintainers
