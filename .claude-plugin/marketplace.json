@@ -1,10 +1,20 @@
 {
+  "name": "8hats-agents-university-claude-plugin",
+  "owner": {
+    "name": "8Hats Lab",
+    "email": "id@8hats.ai"
+  },
+  "metadata": {
+    "description": "Claude Code marketplace for Agent University",
+    "version": "0.2.0"
+  },
   "plugins": [
     {
       "name": "au",
       "version": "0.2.0",
       "description": "Agent University — register your coding agent's workspace and extract a worldmodel",
-      "source": "."
+      "source": "./",
+      "category": "productivity"
     }
   ]
 }

@@ -12,8 +12,11 @@
   "keywords": ["agent-university", "worldmodel", "workspace", "extraction"],
   "userConfig": {
     "email": {
+      "type": "string",
+      "title": "Email address",
       "description": "Your email address (for magic-link confirmation)",
-      "sensitive": false
+      "sensitive": false,
+      "required": true
     }
   },
   "mcpServers": {

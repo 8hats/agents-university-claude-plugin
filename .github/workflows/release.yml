@@ -30,19 +30,81 @@ jobs:
           fi
           echo "Version: $PLUGIN_VERSION"
 
-      - name: Validate marketplace.json
+      - name: Validate marketplace.json against Claude Code schema
+        # Schema: https://code.claude.com/docs/en/plugin-marketplaces.md#marketplace-schema
+        # Required top-level: name (str), owner (object with .name str), plugins (array)
+        # Each plugin entry requires: name (str), source (str | object)
+        # Plugin entry version (if present) must match plugin.json version + tag.
+        env:
+          TAG_REF: ${{ github.ref_name }}
         run: |
-          python3 -c "import json; json.load(open('.claude-plugin/marketplace.json'))"
+          python3 - <<'PY'
+          import json, os, sys
+
+          with open('.claude-plugin/marketplace.json') as f:
+              m = json.load(f)
+          with open('.claude-plugin/plugin.json') as f:
+              p = json.load(f)
+
+          tag = os.environ.get('TAG_REF', '').lstrip('v')
+          errors = []
+
+          # top-level required
+          if not isinstance(m.get('name'), str) or not m['name']:
+              errors.append('marketplace.json: missing or non-string top-level "name"')
+          if not isinstance(m.get('owner'), dict):
+              errors.append('marketplace.json: missing top-level "owner" object')
+          elif not isinstance(m['owner'].get('name'), str) or not m['owner']['name']:
+              errors.append('marketplace.json: owner.name must be a non-empty string')
+          if not isinstance(m.get('plugins'), list) or len(m['plugins']) == 0:
+              errors.append('marketplace.json: "plugins" must be a non-empty array')
+
+          # per-plugin entry
+          for idx, entry in enumerate(m.get('plugins') or []):
+              prefix = f'marketplace.json plugins[{idx}]'
+              if not isinstance(entry.get('name'), str) or not entry['name']:
+                  errors.append(f'{prefix}: missing or non-string "name"')
+              src = entry.get('source')
+              if not (isinstance(src, str) and src) and not isinstance(src, dict):
+                  errors.append(f'{prefix}: missing "source" (string or object)')
+              # if plugin entry has version, it must align with plugin.json + tag
+              if 'version' in entry and entry['version'] != p.get('version'):
+                  errors.append(
+                      f'{prefix}: version "{entry["version"]}" does not match '
+                      f'plugin.json version "{p.get("version")}"'
+                  )
+              if tag and 'version' in entry and entry['version'] != tag:
+                  errors.append(
+                      f'{prefix}: version "{entry["version"]}" does not match tag "{tag}"'
+                  )
+
+          # marketplace metadata.version (optional) must align if present
+          meta = m.get('metadata') or {}
+          if 'version' in meta and meta['version'] != p.get('version'):
+              errors.append(
+                  f'marketplace.json metadata.version "{meta["version"]}" does not match '
+                  f'plugin.json version "{p.get("version")}"'
+              )
+
+          if errors:
+              print('SCHEMA VALIDATION FAILED:')
+              for e in errors:
+                  print('  -', e)
+              sys.exit(1)
+          print('marketplace.json schema OK; versions in lockstep with tag', tag)
+          PY
 
       - name: Validate skills exist
         run: |
-          for skill in install sync status; do
+          # All v0.2.0+ skills — must exist on disk before the marketplace
+          # plugin is published. Update this list when adding/removing skills.
+          for skill in install sync status reflect propose_update reflect_and_propose; do
             if [ ! -f "skills/$skill/SKILL.md" ]; then
               echo "ERROR: skills/$skill/SKILL.md not found"
               exit 1
             fi
           done
-          echo "All skills present"
+          echo "All 6 skills present"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2

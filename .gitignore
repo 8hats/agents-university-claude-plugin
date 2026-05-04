@@ -3,5 +3,10 @@ package.json
 package-lock.json
 vitest.config.ts
 test/
+!test/
+test/*
+!test/regression/
+test/regression/*
+!test/regression/marketplace-schema.test.ts
 .DS_Store
 *.log
