@@ -131,6 +131,82 @@ jobs:
           done
           echo "All 6 skills present"
 
+      - name: Validate SKILL.md state-machine completeness
+        # /au:install drives a state machine; every named state must appear
+        # in the skill body so Claude can branch correctly. Missing any one
+        # state is a regression — Claude silently falls through to a default
+        # that does not match the user's situation. The v0.2.0..0.2.2
+        # pending-not-resending bug is the canonical example.
+        run: |
+          python3 - <<'PY'
+          import sys
+
+          install = open('skills/install/SKILL.md').read()
+          status_md = open('skills/status/SKILL.md').read()
+          sync_md = open('skills/sync/SKILL.md').read()
+
+          INSTALL_STATES = [
+              'IDENTITY_ABSENT',
+              'REGISTRY_ACTIVE',
+              'REGISTRY_PENDING_RESEND',
+              'REGISTRY_REVOKED',
+              'REGISTRY_RESET',
+              'IDENTITY_ORPHANED',
+              'REMOTE_ERROR',
+              'EMAIL_MISMATCH',
+          ]
+          STATUS_STATES = [
+              'IDENTITY_ABSENT',
+              'REGISTRY_ACTIVE',
+              'REGISTRY_PENDING',
+              'REGISTRY_REVOKED',
+              'REGISTRY_RESET',
+              'IDENTITY_ORPHANED',
+              'REMOTE_ERROR',
+          ]
+          SYNC_STATES = ['IDENTITY_ABSENT', 'REGISTRY_PENDING', 'REGISTRY_REVOKED']
+
+          errors = []
+          for s in INSTALL_STATES:
+              if install.count(s) < 2:
+                  errors.append(
+                      f'install/SKILL.md: state "{s}" appears '
+                      f'{install.count(s)}× — expected ≥2 (resolution table + action heading)'
+                  )
+
+          for s in STATUS_STATES:
+              if s not in status_md:
+                  errors.append(f'status/SKILL.md: missing state "{s}"')
+          for s in SYNC_STATES:
+              if s not in sync_md:
+                  errors.append(f'sync/SKILL.md: missing state "{s}"')
+
+          # Pending-resend hint propagation (the 1h TTL recovery path).
+          if '/au:install' not in status_md or 'fresh link' not in status_md.lower():
+              errors.append('status/SKILL.md: pending branch must point at /au:install for resend')
+          if '/au:install' not in sync_md or 'fresh link' not in sync_md.lower():
+              errors.append('sync/SKILL.md: pending branch must point at /au:install for resend')
+
+          # sha256 truncate convention (16 hex chars) documented in all 3 skills.
+          for label, src in [
+              ('install', install), ('status', status_md), ('sync', sync_md)
+          ]:
+              if 'sha256(absolute(cwd))' not in src:
+                  errors.append(f'{label}/SKILL.md: missing sha256(absolute(cwd)) wording')
+              if '16 hex' not in src and 'slice(0, 16)' not in src and 'slice(0,16)' not in src:
+                  errors.append(f'{label}/SKILL.md: missing 16-hex truncation note')
+
+          if errors:
+              print('SKILL state-machine validation FAILED:')
+              for e in errors:
+                  print('  -', e)
+              sys.exit(1)
+          print('skills/install/SKILL.md: all 8 states present')
+          print('skills/status/SKILL.md: all 7 states present + resend hint')
+          print('skills/sync/SKILL.md: all 3 states present + resend hint')
+          print('truncate convention documented in all 3 skills')
+          PY
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:

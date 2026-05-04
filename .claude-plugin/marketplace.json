@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Claude Code marketplace for Agent University",
-    "version": "0.2.2"
+    "version": "0.2.3"
   },
   "plugins": [
     {
       "name": "au",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "description": "Agent University — register your coding agent's workspace and extract a worldmodel",
       "source": "./",
       "category": "productivity"
