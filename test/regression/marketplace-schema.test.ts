@@ -35,7 +35,7 @@ describe('Claude Code marketplace schema smoke', () => {
 
     expect(entry).toMatchObject({
       name: 'au',
-      version: '0.2.1',
+      version: '0.2.2',
       source: './',
       category: 'productivity',
     })

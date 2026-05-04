@@ -1,6 +1,6 @@
 {
   "name": "au",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Agent University — register your coding agent's workspace and extract a worldmodel",
   "author": {
     "name": "Agent University",
@@ -28,6 +28,5 @@
         "AGENT_UNIVERSITY_BACKEND": "https://app.agentsuniversity.io"
       }
     }
-  },
-  "hooks": "./hooks/hooks.json"
+  }
 }

@@ -86,6 +86,31 @@ jobs:
                   f'plugin.json version "{p.get("version")}"'
               )
 
+          # plugin.json must NOT declare the standard hooks/hooks.json file —
+          # Claude Code auto-discovers it; declaring it triggers
+          # "Duplicate hooks file detected: ... resolves to already-loaded file"
+          # on /reload-plugins (Plugin error in /doctor). The hooks.json file
+          # must still exist on disk; only the manifest declaration must be
+          # absent. manifest.hooks may still be used to point at NON-standard
+          # additional hook files (e.g. hooks/extra.json), but the standard
+          # path is forbidden.
+          plugin_hooks = p.get('hooks')
+          if plugin_hooks in ('./hooks/hooks.json', 'hooks/hooks.json'):
+              errors.append(
+                  'plugin.json: must NOT declare standard hooks/hooks.json — '
+                  'it is auto-discovered. Remove the "hooks" field; the '
+                  'hooks/hooks.json file itself stays on disk.'
+              )
+
+          # The standard hooks/hooks.json file MUST exist on disk so Claude
+          # Code's auto-discovery finds it. Without this file the SessionStart
+          # + UserPromptSubmit polling fallback (REQ-014) is silently absent.
+          if not os.path.isfile('hooks/hooks.json'):
+              errors.append(
+                  'hooks/hooks.json missing — REQ-014 polling fallback would '
+                  'not register. Add the file (do not declare it in plugin.json).'
+              )
+
           if errors:
               print('SCHEMA VALIDATION FAILED:')
               for e in errors:
