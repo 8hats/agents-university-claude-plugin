@@ -46,9 +46,9 @@ describe('RT-014 — existing skills preserved', () => {
     expect(src.startsWith('---\n')).toBe(true)
   })
 
-  it('plugin.json carries version 0.2.5', async () => {
+  it('plugin.json carries version 0.2.6', async () => {
     const path = join(__dirname, '..', '..', '.claude-plugin', 'plugin.json')
     const json = JSON.parse(await readFile(path, 'utf8'))
-    expect(json.version).toBe('0.2.5')
+    expect(json.version).toBe('0.2.6')
   })
 })
