@@ -45,7 +45,7 @@ POST to `${AGENT_UNIVERSITY_BACKEND}/api/plugin/register` (or use `agent_registe
   "install_id": "<generated UUID v4>",
   "owner_email": "${AGENT_UNIVERSITY_EMAIL}",
   "agent_platform": "claude-code",
-  "plugin_version": "0.2.3"
+  "plugin_version": "0.2.4"
 }
 ```
 
@@ -70,7 +70,7 @@ The agent was registered earlier but the magic-link wasn't confirmed (the link m
   "install_id": "<existing install_id from identity.json>",
   "owner_email": "${AGENT_UNIVERSITY_EMAIL}",
   "agent_platform": "claude-code",
-  "plugin_version": "0.2.3"
+  "plugin_version": "0.2.4"
 }
 ```
 
