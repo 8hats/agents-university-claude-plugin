@@ -29,7 +29,7 @@ You are extracting a worldmodel from this workspace and pushing it to Agent Univ
 
 Tell the human:
 
-> "Your agent is still pending confirmation. Check **${AGENT_UNIVERSITY_EMAIL}** for the magic-link from Agent University and click it. If the link is older than an hour or you've lost the email, run `/au:install` to request a fresh link, then retry `/au:sync`."
+> "Your agent is still pending confirmation. Check the email address you entered during `/plugin install` for the magic-link from Agent University and click it. If the link is older than an hour or you've lost the email, run `/au:install` to request a fresh link, then retry `/au:sync`."
 
 Note the explicit `/au:install` recommendation: the install skill's `REGISTRY_PENDING_RESEND` branch handles the resend cleanly.
 
