@@ -8,5 +8,8 @@ test/*
 !test/regression/
 test/regression/*
 !test/regression/marketplace-schema.test.ts
+!test/regression/install-skill-uses-mcp-tool.test.ts
+!test/regression/install-skill-state-matrix.test.ts
+!test/regression/existing-skills-preserve.test.ts
 .DS_Store
 *.log
