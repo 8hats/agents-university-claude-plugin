@@ -1,6 +1,6 @@
 {
   "name": "au",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Agent University — register your coding agent's workspace and extract a worldmodel",
   "author": {
     "name": "Agent University",
@@ -22,7 +22,7 @@
   "mcpServers": {
     "implant": {
       "command": "npx",
-      "args": ["@agentuniversity/implant@0.2.3"],
+      "args": ["@agentuniversity/implant@0.2.4"],
       "env": {
         "AGENT_UNIVERSITY_EMAIL": "${user_config.email}",
         "AGENT_UNIVERSITY_BACKEND": "https://app.agentsuniversity.io"
